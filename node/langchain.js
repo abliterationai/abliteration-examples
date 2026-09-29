@@ -7,17 +7,15 @@ if (!apiKey) {
   process.exit(1);
 }
 
-// Many LangChain builds read OpenAI-style env vars, so set them explicitly.
-process.env.OPENAI_API_KEY = apiKey;
-process.env.OPENAI_BASE_URL =
-  process.env.ABLITERATION_BASE_URL || "https://api.abliteration.ai/v1";
-
+const baseURL = process.env.ABLITERATION_BASE_URL || "https://api.abliteration.ai/v1";
 const model = process.env.ABLITERATION_MODEL || "abliterated-model";
 const stream = process.env.STREAM === "1";
 
 const llm = new ChatOpenAI({
   model,
+  apiKey,
   temperature: 0.6,
+  configuration: { baseURL },
 });
 
 function contentToText(content) {

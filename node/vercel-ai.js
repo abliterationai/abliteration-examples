@@ -22,16 +22,16 @@ async function main() {
     "Give me one upbeat sentence that sells abliteration.ai as an OpenAI-compatible, uncensored endpoint.";
 
   if (stream) {
-    const { textStream, usage } = await streamText({
+    const result = streamText({
       model: openai(model),
       prompt,
     });
     process.stdout.write("Streaming response:\n");
-    for await (const text of textStream) {
+    for await (const text of result.textStream) {
       process.stdout.write(text);
     }
     process.stdout.write("\n-- done --\n");
-    if (usage) console.log("Usage:", usage);
+    console.log("Usage:", await result.usage);
     return;
   }
 

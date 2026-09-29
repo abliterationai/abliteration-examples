@@ -12,14 +12,16 @@
     "vercel:stream": "STREAM=1 node vercel-ai.js"
   },
   "dependencies": {
-    "@ai-sdk/openai": "^0.1.10",
-    "@langchain/openai": "^0.2.8",
-    "ai": "^3.2.35",
+    "@ai-sdk/openai": "4.0.81",
+    "@langchain/core": "1.2.13",
+    "@langchain/openai": "1.6.0",
+    "ai": "7.0.122",
     "dotenv": "^16.4.5",
-    "langchain": "^0.2.12",
-    "openai": "^4.73.1"
+    "langchain": "1.5.14",
+    "openai": "7.25.0",
+    "zod": "4.6.5"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=22"
   }
 }
