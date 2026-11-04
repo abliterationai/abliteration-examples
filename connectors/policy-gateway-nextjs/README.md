@@ -24,6 +24,9 @@ curl https://your-app.example/api/policy \
   -d '{"model":"abliterated-model","messages":[{"role":"user","content":"Summarize our refund policy."}]}'
 ```
 
+## Security note
+The handler forwards a policy identity (`policy_user`, project, target) with your server-side API key. Pass `resolvePolicyUser` and derive the identity from your authenticated session. It takes precedence over request body fields and headers on purpose: body and header values are caller-controlled, so without a resolver any caller can claim another user's identity. When no resolver returns a user, the handler ignores identity fields in the request and forwards a fixed default user instead.
+
 ## Policy Gateway base URL (optional)
 `createPolicyGatewayRoute` defaults to the hosted Policy Gateway. Set this only if you need to override it:
 

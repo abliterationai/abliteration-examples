@@ -53,6 +53,13 @@ class PolicyGatewayClient:
 
 
 def policy_user_from_request(request: Request) -> Optional[str]:
+    """Read the policy user from request headers.
+
+    These headers are client-controlled. Only use this when a trusted,
+    authenticated layer in front of your app sets or strips them.
+    Otherwise any caller can claim another user's policy identity.
+    Prefer deriving the identity from your authenticated session instead.
+    """
     return request.headers.get("x-user-id") or request.headers.get("x-policy-user")
 
 

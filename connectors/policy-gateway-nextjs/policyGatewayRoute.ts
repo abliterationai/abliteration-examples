@@ -26,7 +26,7 @@ export const createPolicyGatewayRoute = (options: PolicyGatewayRouteOptions) => 
   return async function POST(req: NextRequest) {
     const body = await req.json();
     const resolvedUser = await options.resolvePolicyUser?.(req);
-    const policyUser = body.policy_user || resolvedUser || req.headers.get("x-policy-user") || "user-12345";
+    const policyUser = resolvedUser || "user-12345";
     const policyProjectId = body.policy_project_id || options.policyProjectId || req.headers.get("x-policy-project");
     const policyTarget = body.policy_target || options.policyTarget || req.headers.get("x-policy-target");
 

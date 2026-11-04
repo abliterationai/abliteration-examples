@@ -26,6 +26,9 @@ async def chat(request: Request):
     return await client.chat_completions(body, policy_user=policy_user, policy_target="support-bot")
 ```
 
+## Security note
+`policy_user_from_request` reads the identity from request headers, which are client-controlled. Use it only when a trusted, authenticated layer in front of your app sets or strips those headers. Otherwise derive the policy user from your authenticated session, so callers cannot claim another user's policy identity.
+
 ## Policy Gateway base URL (optional)
 The client defaults to the hosted Policy Gateway. Set this only if you need to override it:
 
