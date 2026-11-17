@@ -1,0 +1,24 @@
+{
+  "name": "abliteration-examples-typescript",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ai-sdk": "tsx ai-sdk.ts",
+    "ai-sdk:stream": "STREAM=1 tsx ai-sdk.ts",
+    "test": "tsx --test *.test.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@ai-sdk/openai-compatible": "3.0.92",
+    "ai": "7.0.173"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.6",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}
