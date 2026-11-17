@@ -29,12 +29,14 @@ A compact set of runnable examples for the Abliteration.ai chat API. Every sampl
   STREAM=1 ABLITERATION_API_KEY=ak_your_key_here mvn -q exec:java
   ```
 - **Try integrations:** LangChain (`npm run langchain` or `python python/langchain_chat.py`), Vercel AI SDK (`npm run vercel`), and LiteLLM (`python python/litellm_chat.py`).
+- **Pi Durable (TypeScript):** run `npm ci && npm start` in `pi-durable/` for a SQLite-backed conversation with restart recovery. See the [quickstart](pi-durable/README.md).
 
 ## Repo layout
 - `node/` — JavaScript + OpenAI SDK; shows non-streaming and streaming.
 - `python/` — Python + OpenAI SDK; same patterns as Node.
 - `go/` — Go + go-openai client, streaming and non-streaming in one file.
 - `java/` — Java 17 + Maven + `java.net.http`, with streaming via SSE.
+- `pi-durable/` — TypeScript + Pi Durable; persisted conversations, live output, and recovery.
 - `curl/` — shell snippets for quick manual requests.
 - `connectors/` — Policy Gateway connectors (Next.js, FastAPI, LangChain, LiteLLM).
 - Integrations: `node/langchain.js`, `node/vercel-ai.js`, `python/langchain_chat.py`, `python/litellm_chat.py`.
@@ -112,3 +114,12 @@ ABLITERATION_API_KEY=ak_your_key_here mvn -q exec:java
 STREAM=1 ABLITERATION_API_KEY=ak_your_key_here mvn -q exec:java
 ```
 Plain `java.net.http` client posts to `/chat/completions` and supports SSE streaming when `STREAM=1`.
+
+### Pi Durable (TypeScript)
+```bash
+cd pi-durable
+npm ci
+ABLITERATION_API_KEY=ak_your_key_here npm start
+REQUEST_ID=stream-demo ABLITERATION_API_KEY=ak_your_key_here npm run stream
+```
+Requires Node.js 22.19.0 or newer. Reusing a request ID in the same SQLite session recovers or replays that submission instead of adding another input. See [`pi-durable/README.md`](pi-durable/README.md) for configuration, recovery, and common errors.
