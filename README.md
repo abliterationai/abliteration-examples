@@ -120,6 +120,6 @@ Plain `java.net.http` client posts to `/chat/completions` and supports SSE strea
 cd pi-durable
 npm ci
 ABLITERATION_API_KEY=ak_your_key_here npm start
-REQUEST_ID=stream-demo npm run stream
+REQUEST_ID=stream-demo ABLITERATION_API_KEY=ak_your_key_here npm run stream
 ```
 Requires Node.js 22.19.0 or newer. Reusing a request ID in the same SQLite session recovers or replays that submission instead of adding another input. See [`pi-durable/README.md`](pi-durable/README.md) for configuration, recovery, and common errors.
