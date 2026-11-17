@@ -3,7 +3,6 @@ import { openAICompletionsApi } from "@earendil-works/pi-ai/api/openai-completio
 
 const baseUrl = process.env.ABLITERATION_BASE_URL || "https://api.abliteration.ai/v1";
 
-// Default-model metadata from /v1/models; maxTokens is this demo's output budget.
 export const model: Model<"openai-completions"> = {
   id: process.env.ABLITERATION_MODEL || "abliterated-model",
   name: "Abliteration",

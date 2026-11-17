@@ -93,7 +93,6 @@ test("reopening a completed request prints the stored answer without paying for 
 test("an incomplete provider stream fails instead of printing a success marker", { timeout: 20000 }, async () => {
   let requests = 0;
   const local = await fixture((_request, response) => {
-    // A retry is rejected permanently; an incorrectly accepted partial would never reach it.
     if (requests++ > 0) {
       response.writeHead(401, { "Content-Type": "application/json" });
       response.end(JSON.stringify({ error: { message: "Unauthorized", type: "authentication_error" } }));
