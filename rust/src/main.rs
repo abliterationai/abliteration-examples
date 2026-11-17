@@ -21,7 +21,9 @@ async fn main() {
 
 async fn run() -> Result<(), Box<dyn Error>> {
     let api_key = env::var("ABLITERATION_API_KEY")
-        .map_err(|_| "Set ABLITERATION_API_KEY in your environment before running.")?;
+        .ok()
+        .filter(|key| !key.trim().is_empty())
+        .ok_or("Set ABLITERATION_API_KEY in your environment before running.")?;
     let base_url = env::var("ABLITERATION_BASE_URL")
         .unwrap_or_else(|_| "https://api.abliteration.ai/v1".to_string());
     let model = env::var("ABLITERATION_MODEL").unwrap_or_else(|_| "abliterated-model".to_string());
