@@ -28,6 +28,12 @@ A compact set of runnable examples for the Abliteration.ai chat API. Every sampl
   ABLITERATION_API_KEY=ak_your_key_here mvn -q exec:java    # non-streaming
   STREAM=1 ABLITERATION_API_KEY=ak_your_key_here mvn -q exec:java
   ```
+- **Rust quickstart (Rig):** needs Rust 1.97.1 or newer. See [`rust/README.md`](rust/README.md).
+  ```bash
+  cd rust
+  ABLITERATION_API_KEY=ak_your_key_here cargo run            # non-streaming
+  STREAM=1 ABLITERATION_API_KEY=ak_your_key_here cargo run
+  ```
 - **Try integrations:** LangChain (`npm run langchain` or `python python/langchain_chat.py`), Vercel AI SDK (`npm run vercel`), and LiteLLM (`python python/litellm_chat.py`).
 
 ## Repo layout
@@ -35,6 +41,7 @@ A compact set of runnable examples for the Abliteration.ai chat API. Every sampl
 - `python/` — Python + OpenAI SDK; same patterns as Node.
 - `go/` — Go + go-openai client, streaming and non-streaming in one file.
 - `java/` — Java 17 + Maven + `java.net.http`, with streaming via SSE.
+- `rust/` — Rust + [Rig](https://rig.rs) agent, streaming and non-streaming in one file. Setup and troubleshooting in [`rust/README.md`](rust/README.md).
 - `curl/` — shell snippets for quick manual requests.
 - `connectors/` — Policy Gateway connectors (Next.js, FastAPI, LangChain, LiteLLM).
 - Integrations: `node/langchain.js`, `node/vercel-ai.js`, `python/langchain_chat.py`, `python/litellm_chat.py`.
@@ -112,3 +119,11 @@ ABLITERATION_API_KEY=ak_your_key_here mvn -q exec:java
 STREAM=1 ABLITERATION_API_KEY=ak_your_key_here mvn -q exec:java
 ```
 Plain `java.net.http` client posts to `/chat/completions` and supports SSE streaming when `STREAM=1`.
+
+### Rust (Rig)
+```bash
+cd rust
+ABLITERATION_API_KEY=ak_your_key_here cargo run
+STREAM=1 ABLITERATION_API_KEY=ak_your_key_here cargo run
+```
+Builds a [Rig](https://rig.rs) agent on Rig's OpenAI client pointed at `https://api.abliteration.ai/v1`. Needs Rust 1.97.1 or newer. [`rust/README.md`](rust/README.md) covers setup, expected output, reuse in your own project and common errors.

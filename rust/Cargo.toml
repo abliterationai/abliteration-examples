@@ -1,0 +1,10 @@
+[package]
+name = "abliteration-rig-example"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.97.1"
+
+[dependencies]
+futures = "0.3.34"
+rig = "0.46.0"
+tokio = { version = "1.54.1", features = ["macros", "rt-multi-thread"] }
