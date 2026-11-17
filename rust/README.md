@@ -69,7 +69,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 }
 ```
 
-Use `client.chat(...)`, not Rig's default `client.completion(...)`. The default sends OpenAI's newer Responses format, which abliteration.ai doesn't accept. `chat` sends the Chat Completions format it does.
+`client.chat(...)` calls the Chat Completions endpoint, the same one the other samples use. Rig's default `client.completion(...)` calls the Responses endpoint instead, which abliteration.ai also supports, so either works.
 
 From here, Rig lets you give the agent tools, memory and documents to draw on. See the [Rig docs](https://docs.rs/rig/latest/rig/).
 
