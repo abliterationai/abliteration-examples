@@ -1,6 +1,6 @@
 import { BACKGROUND_CONTEXT } from "@earendil-works/chord/context";
 import type { AssistantMessage } from "@earendil-works/pi-ai";
-import { AssistantEntry, createRegistry, Harness, LiveDoc } from "@earendil-works/pi-durable";
+import { AssistantEntry, createRegistry, defineExtension, GenerationTask, Harness, hook, LiveDoc } from "@earendil-works/pi-durable";
 import { openNodeSqliteStorage } from "@earendil-works/pi-durable/storage/sqlite/node";
 import { model, models } from "./abliteration.js";
 
@@ -8,16 +8,31 @@ function textOf(message: Pick<AssistantMessage, "content"> | undefined): string 
   return message?.content.filter(block => block.type === "text").map(block => block.text).join("") || "";
 }
 
+const rejectCutOffAnswers = defineExtension({
+  name: "reject-cut-off-answers",
+  hooks: [hook(GenerationTask, {
+    afterResponse(message) {
+      if (message.stopReason === "length") {
+        message.stopReason = "error";
+        message.errorMessage = "The model did not finish its answer: length";
+      }
+    },
+  })],
+});
+
 async function main() {
   if (!process.env.ABLITERATION_API_KEY) {
     throw new Error("Set ABLITERATION_API_KEY in your environment before running.");
   }
 
+  process.umask(0o077);
   const context = BACKGROUND_CONTEXT;
+  const registry = createRegistry();
+  registry.install(rejectCutOffAnswers);
   const stream = process.env.STREAM === "1";
   const harness = await Harness.open(
     await openNodeSqliteStorage(process.env.SESSION_FILE || "./session.sqlite"),
-    { models, registry: createRegistry() },
+    { models, registry },
     context,
   );
 

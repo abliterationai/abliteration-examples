@@ -42,7 +42,7 @@ REQUEST_ID=recovery-demo npm start
 
 The admitted input is not submitted twice. An interrupted model request can be retried, potentially incurring another API charge; submission deduplication is not exactly-once provider execution. A submission that has already failed remains failed: after fixing its cause, use a new request ID.
 
-Only one process should drive a session file at a time. The database contains prompts and answers in plaintext; keep it private. SQLite's WAL mode protects against process crashes, not every power/host failure. Live progress can lag persistence by up to the harness's default one-second flush interval.
+Only one process should drive a session file at a time. The database contains prompts and answers in plaintext. The sample creates it readable only by your user; a database from an older run keeps its permissions, so keep it private. SQLite's WAL mode protects against process crashes, not every power/host failure. Live progress can lag persistence by up to the harness's default one-second flush interval.
 
 ## Configuration
 
@@ -85,6 +85,7 @@ The provider explicitly uses `openai-completions` with `max_tokens`, not OpenAI'
 - **401/403:** verify the key and account access, then retry with a new `REQUEST_ID` if the submission has already failed.
 - **404:** include `/v1` in the base URL and verify the model ID.
 - **Database locked:** stop the other process using the same `SESSION_FILE`.
+- **The model did not finish its answer: length:** the answer hit the 4,096-token limit. The sample counts this as a failed submission and leaves the cut-off text out of later questions. Ask again with a new `REQUEST_ID`, or raise `maxTokens` in `abliteration.ts`.
 - **Same answer again:** this is intentional deduplication; change `REQUEST_ID` for a new API request.
 
 ## Checks

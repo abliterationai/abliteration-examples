@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { spawn } from "node:child_process";
 import { once } from "node:events";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, rm, stat } from "node:fs/promises";
 import { createServer, type IncomingMessage, type ServerResponse } from "node:http";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -85,6 +85,9 @@ test("reopening a completed request prints the stored answer without paying for 
     assert.doesNotMatch(first.stdout + second.stdout, /private reasoning/);
     assert.equal(first.stdout.match(/Submission: (\S+)/)?.[1], second.stdout.match(/Submission: (\S+)/)?.[1]);
     assert.equal(requests, 1);
+    if (process.platform !== "win32") {
+      assert.equal((await stat(local.env.SESSION_FILE!)).mode & 0o777, 0o600);
+    }
   } finally {
     await local.close();
   }
@@ -111,8 +114,15 @@ test("an incomplete provider stream fails instead of printing a success marker",
   }
 });
 
-test("an answer cut off by the token budget is not reported as complete", { timeout: 20000 }, async () => {
-  const local = await fixture((_request, response) => sendAnswer(response, "Cut off", "length"));
+test("an answer cut off by the token budget fails and is left out of the next question", { timeout: 20000 }, async () => {
+  const sent: string[] = [];
+  const local = await fixture(async (request, response) => {
+    let body = "";
+    for await (const chunk of request) body += chunk;
+    sent.push(body);
+    if (sent.length === 1) sendAnswer(response, "Cut off", "length");
+    else sendAnswer(response, "A full answer.");
+  });
   try {
     for (const stream of ["0", "1"]) {
       const result = await run({ ...local.env, STREAM: stream }).exited;
@@ -120,6 +130,11 @@ test("an answer cut off by the token budget is not reported as complete", { time
       assert.match(result.stderr, /The model did not finish its answer: length/);
       assert.doesNotMatch(result.stdout, /-- done --|Non-streaming response:/);
     }
+    assert.equal(sent.length, 1);
+    const next = await run({ ...local.env, REQUEST_ID: "next-question" }).exited;
+    assert.equal(next.code, 0, next.stderr);
+    assert.match(next.stdout, /A full answer\./);
+    assert.doesNotMatch(sent[1], /Cut off/);
   } finally {
     await local.close();
   }
